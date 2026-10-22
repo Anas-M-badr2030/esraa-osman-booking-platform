@@ -23,19 +23,17 @@ type PaymentStatus =
   | "ملغى";
 
 export default function AdminDashboardPage() {
-  // محاكاة صلاحيات الأدوار (البند 3: مبدأ أقل صلاحية لازمة)
   const [currentRole, setCurrentRole] = useState<RoleType>("admin");
   const [activeTab, setActiveTab] = useState<
-    "overview" | "bookings" | "services" | "catalog" | "audit"
+    "overview" | "services" | "catalog" | "audit"
   >("overview");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // بيانات الحجوزات والطلبات (البند 5.1 و 5.2)
   const [bookings, setBookings] = useState([
     {
       id: "EO-849201",
       clientName: "سارة محمود",
-      serviceTitle: "جلسة استشارية فردية خاصة",
+      serviceTitle: "جلسة تقييم العلاقة والاختيار الصحيح",
       slot: "2026-10-26 | 04:30 م",
       amount: 1200,
       paymentMethod: "تحويل يدوي (InstaPay)",
@@ -46,7 +44,7 @@ export default function AdminDashboardPage() {
     {
       id: "EO-849188",
       clientName: "مريم عبد العزيز",
-      serviceTitle: "جلسة توافق وإرشاد زوجي",
+      serviceTitle: "جلسة استعادة الشغف وعلاج الفتور",
       slot: "2026-10-27 | 06:30 م",
       amount: 1800,
       paymentMethod: "بوابة دفع إلكتروني",
@@ -57,9 +55,9 @@ export default function AdminDashboardPage() {
     {
       id: "EO-849150",
       clientName: "نهى خالد",
-      serviceTitle: "دائرة الدعم والوعي العلاقاتي",
+      serviceTitle: "جلسة تخطي علاقة صعبة والتعافي النفسي",
       slot: "2026-10-28 | 08:30 م",
-      amount: 650,
+      amount: 1200,
       paymentMethod: "تحويل يدوي (محفظة)",
       reference: "VF-553019",
       bookingStatus: "مكتمل" as BookingStatus,
@@ -67,30 +65,29 @@ export default function AdminDashboardPage() {
     },
   ]);
 
-  // إدارة الخدمات دون تعديل الكود (البند 5.1 و 12)
   const [services, setServices] = useState([
     {
-      id: "srv-1",
-      title: "جلسة استشارية فردية خاصة",
-      category: "فردية",
+      id: "ind-1",
+      title: "جلسة تقييم العلاقة والاختيار الصحيح",
+      category: "بدايات العلاقات",
       duration: 60,
       price: 1200,
       published: true,
     },
     {
-      id: "srv-2",
-      title: "جلسة توافق وإرشاد زوجي",
-      category: "ثنائية",
+      id: "couples-1",
+      title: "جلسة استعادة الشغف وعلاج الفتور",
+      category: "إحياء الشغف والتوافق",
       duration: 90,
       price: 1800,
       published: true,
     },
     {
-      id: "srv-3",
-      title: "دائرة الدعم والوعي العلاقاتي",
-      category: "جماعية / ورشة",
-      duration: 120,
-      price: 650,
+      id: "recovery-1",
+      title: "جلسة تخطي علاقة صعبة والتعافي النفسي",
+      category: "التعافي وتخطي الأزمات",
+      duration: 60,
+      price: 1200,
       published: true,
     },
   ]);
@@ -99,11 +96,10 @@ export default function AdminDashboardPage() {
   const [newServicePrice, setNewServicePrice] = useState("");
   const [newServiceDuration, setNewServiceDuration] = useState("60");
 
-  // سجل التدقيق الإداري للأحداث الحساسة (البند 5.7 و 9)
   const [auditLogs, setAuditLogs] = useState([
     {
       id: "LOG-103",
-      actor: "مدير المنصة (إسراء عثمان)",
+      actor: "مدير المنصة (د. إسراء عثمان)",
       action: "اعتماد إيصال دفع يدوي وتغيير حالة الحجز EO-849188 إلى مؤكد",
       timestamp: "2026-10-23 11:40 ص",
     },
@@ -115,20 +111,30 @@ export default function AdminDashboardPage() {
     },
     {
       id: "LOG-101",
-      actor: "مدير المنصة (إسراء عثمان)",
-      action: "تحديث سعر خدمة (جلسة استشارية فردية خاصة) إلى 1200 ج.م",
+      actor: "مدير المنصة (د. إسراء عثمان)",
+      action: "تحديث روابط التواصل الرسمية (israaosman.com / @dr_israa_osman)",
       timestamp: "2026-10-21 03:20 م",
     },
   ]);
 
-  // دالة تحديث حالة الحجز مع تسجيل الحدث في Audit Log (البند 5.1 و 5.7)
+  const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (target.src.endsWith("/esraa-logo.jpg")) {
+      target.src = "/images/esraa-logo.jpg.jpg";
+    } else if (target.src.endsWith("/esraa-logo.jpg.jpg")) {
+      target.src = "/images/esraa-logo.png";
+    } else if (target.src.endsWith("/esraa-logo.png")) {
+      target.src = "/images/1000153492.jpg";
+    }
+  };
+
   const handleUpdateBookingStatus = (id: string, newStatus: BookingStatus) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === id ? { ...b, bookingStatus: newStatus } : b))
     );
     const roleLabel =
       currentRole === "admin"
-        ? "مدير المنصة"
+        ? "مدير المنصة (د. إسراء عثمان)"
         : currentRole === "support"
         ? "مسؤول دعم/حجوزات"
         : "محرر محتوى";
@@ -144,7 +150,6 @@ export default function AdminDashboardPage() {
     ]);
   };
 
-  // دالة اعتماد أو رفض التحويل اليدوي (البند 5.2)
   const handleVerifyPayment = (id: string, decision: "مدفوع" | "فشل") => {
     if (currentRole !== "admin") return;
     setBookings((prev) =>
@@ -161,7 +166,7 @@ export default function AdminDashboardPage() {
     setAuditLogs((prev) => [
       {
         id: "LOG-" + Math.floor(104 + Math.random() * 900),
-        actor: "مدير المنصة",
+        actor: "مدير المنصة (د. إسراء عثمان)",
         action: `مراجعة التحويل اليدوي للطلب (${id}): تم تحديد حالة الدفع «${decision}»`,
         timestamp: "الآن",
       },
@@ -169,7 +174,6 @@ export default function AdminDashboardPage() {
     ]);
   };
 
-  // دالة إضافة خدمة جديدة بدون تعديل الكود (البند 5.1)
   const handleAddService = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newServiceTitle.trim() || !newServicePrice) return;
@@ -179,7 +183,7 @@ export default function AdminDashboardPage() {
       {
         id: newId,
         title: newServiceTitle,
-        category: "فردية",
+        category: "استشارة خاصة",
         duration: Number(newServiceDuration),
         price: Number(newServicePrice),
         published: true,
@@ -188,7 +192,7 @@ export default function AdminDashboardPage() {
     setAuditLogs((prev) => [
       {
         id: "LOG-" + Math.floor(104 + Math.random() * 900),
-        actor: "مدير المنصة",
+        actor: "مدير المنصة (د. إسراء عثمان)",
         action: `إضافة خدمة جديدة للكتالوج: «${newServiceTitle}» بسعر ${newServicePrice} ج.م`,
         timestamp: "الآن",
       },
@@ -213,27 +217,26 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#fdf4f8] text-[#1f1224] flex flex-col">
-      {/* Top Admin Header */}
       <header className="bg-[#2b1136] text-white border-b border-purple-900 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src="/images/esraa-logo.jpg"
-              alt="شعار إسراء عثمان"
+              onError={handleLogoError}
+              alt="شعار د. إسراء عثمان"
               className="h-10 w-10 rounded-lg object-contain bg-white p-1"
             />
             <div>
               <span className="font-bold text-sm sm:text-base block">
-                لوحة الإدارة المركزية — منصة إسراء عثمان
+                لوحة الإدارة المركزية — منصة د. إسراء عثمان
               </span>
               <span className="text-[11px] text-pink-300 block">
-                نظام الصلاحيات والأدوار (RBAC) وسجل التدقيق المباشر
+                israaosman.com • نظام الصلاحيات (RBAC) وسجل التدقيق
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* مبدل الأدوار لمعاينة البند 3 من الوثيقة */}
             <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl text-xs">
               <span className="text-pink-200 hidden sm:inline">معاينة بصلاحية:</span>
               <select
@@ -242,7 +245,7 @@ export default function AdminDashboardPage() {
                 className="bg-transparent text-white font-bold focus:outline-none cursor-pointer"
               >
                 <option value="admin" className="text-black">
-                  مدير المنصة (صلاحية كاملة)
+                  مدير المنصة (د. إسراء عثمان)
                 </option>
                 <option value="support" className="text-black">
                   مسؤول دعم/حجوزات (مواعيد فقط)
@@ -264,18 +267,17 @@ export default function AdminDashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 space-y-8">
-        {/* تنبيه صلاحية الدور الحالي (البند 3) */}
         <div className="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
             <span className="font-extrabold text-[#6b1d7a]">الدور النشط حالياً: </span>
             {currentRole === "admin" && (
               <span>
-                <strong>مدير المنصة</strong> — صلاحية كاملة لإدارة الخدمات، الأسعار، اعتماد المدفوعات، المنتجات، وسجل التدقيق.
+                <strong>مدير المنصة (د. إسراء عثمان)</strong> — صلاحية كاملة لإدارة الخدمات، الأسعار، اعتماد المدفوعات، المنتجات، وسجل التدقيق.
               </span>
             )}
             {currentRole === "support" && (
               <span>
-                <strong>مسؤول دعم/حجوزات</strong> — متابعة المواعيد وتحديث حالات الحضور فقط (تم حجب الإيرادات واعتماد المدفوعات تطبيقاً لمبدأ أقل صلاحية).
+                <strong>مسؤول دعم/حجوزات</strong> — متابعة المواعيد وتحديث حالات الحضور فقط (تم حجب الإيرادات واعتماد المدفوعات).
               </span>
             )}
             {currentRole === "editor" && (
@@ -289,7 +291,7 @@ export default function AdminDashboardPage() {
           </span>
         </div>
 
-        {/* مؤشرات الأداء الرئيسية KPIs (البند 2 و 5.7) */}
+        {/* مؤشرات الأداء الرئيسية */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-white p-5 rounded-3xl border border-pink-100 shadow-sm">
             <p className="text-xs text-gray-500">إجمالي الطلبات المسجلة</p>
@@ -308,15 +310,13 @@ export default function AdminDashboardPage() {
             <p className="text-2xl font-extrabold text-[#6b1d7a] mt-1">
               {currentRole === "admin" ? "86,400 ج.م" : "🔒 مقيد حسب الدور"}
             </p>
-            <span className="text-[11px] text-gray-500">متوسط قيمة الطلب: 1,150 ج.م</span>
+            <span className="text-[11px] text-gray-500">متوسط قيمة الطلب: 1,250 ج.م</span>
           </div>
 
           <div className="bg-white p-5 rounded-3xl border border-pink-100 shadow-sm">
-            <p className="text-xs text-gray-500">المنتج الرقمي الأكثر شراءً</p>
-            <p className="text-base font-extrabold text-[#2b1136] mt-1">
-              دليل الحدود الصحية
-            </p>
-            <span className="text-[11px] text-[#db1a69] font-bold">95 عملية تنزيل آمنة</span>
+            <p className="text-xs text-gray-500">جمهور القناة الرسمي</p>
+            <p className="text-xl font-extrabold text-[#2b1136] mt-1">+128 ألف مشترك</p>
+            <span className="text-[11px] text-[#db1a69] font-bold">652 فيديو منشور</span>
           </div>
 
           <div className="bg-white p-5 rounded-3xl border border-pink-100 shadow-sm">
@@ -332,7 +332,7 @@ export default function AdminDashboardPage() {
             { id: "overview", label: "الحجوزات والمدفوعات" },
             { id: "services", label: "إدارة الخدمات والأسعار" },
             { id: "catalog", label: "المتجر الرقمي، البرامج، والعضويات" },
-            { id: "audit", label: "سجل التدقيق والإعدادات (Audit Logs)" },
+            { id: "audit", label: "سجل التدقيق والروابط الرسمية" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -348,19 +348,18 @@ export default function AdminDashboardPage() {
           ))}
         </div>
 
-        {/* محتوى التبويب 1: إدارة الحجوزات والطلبات والمدفوعات */}
         {activeTab === "overview" && (
           <div className="bg-white rounded-3xl p-6 border border-pink-100 shadow-sm space-y-6">
             {currentRole === "editor" ? (
               <div className="p-8 text-center text-sm text-gray-500">
-                🔒 عفواً، صلاحية «محرر المحتوى» لا تخول الوصول إلى بيانات العملاء أو الحجوزات أو المدفوعات (تطبيقاً للبند 3 من وثيقة المتطلبات).
+                🔒 عفواً، صلاحية «محرر المحتوى» لا تخول الوصول إلى بيانات العملاء أو الحجوزات أو المدفوعات.
               </div>
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-extrabold text-[#2b1136]">
-                      سجل الحجوزات ومراجعة المدفوعات
+                      سجل الحجوزات ومراجعة المدفوعات — د. إسراء عثمان
                     </h2>
                     <p className="text-xs text-gray-500 mt-1">
                       تحديث حالات الحجز السبع، واعتماد إيصالات التحويل اليدوي مع التوثيق الفوري في سجل التدقيق.
@@ -472,12 +471,11 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* محتوى التبويب 2: إدارة الخدمات والأسعار دون تعديل الكود (البند 5.1 و 12) */}
         {activeTab === "services" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-pink-100 shadow-sm space-y-4">
               <h2 className="text-lg font-extrabold text-[#2b1136]">
-                كتالوج الخدمات الحالي (تعديل السعر أو إيقاف النشر فوراً)
+                كتالوج خدمات د. إسراء عثمان (تعديل السعر أو إيقاف النشر فوراً)
               </h2>
               <div className="space-y-3">
                 {services.map((s) => (
@@ -523,7 +521,7 @@ export default function AdminDashboardPage() {
                   required
                   value={newServiceTitle}
                   onChange={(e) => setNewServiceTitle(e.target.value)}
-                  placeholder="مثال: جلسة متابعة سريعة"
+                  placeholder="مثال: جلسة قراءة لغة الجسد والسلوك"
                   className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs"
                 />
               </div>
@@ -537,7 +535,7 @@ export default function AdminDashboardPage() {
                     required
                     value={newServicePrice}
                     onChange={(e) => setNewServicePrice(e.target.value)}
-                    placeholder="850"
+                    placeholder="1500"
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs"
                   />
                 </div>
@@ -563,18 +561,17 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* محتوى التبويب 3: المتجر الرقمي، البرامج، والعضويات */}
         {activeTab === "catalog" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-3xl border border-pink-100 shadow-sm space-y-3">
               <span className="px-3 py-1 rounded-full bg-pink-100 text-[#db1a69] text-xs font-bold">
-                المتجر الرقمي (البند 5.3)
+                المتجر الرقمي
               </span>
               <h3 className="font-extrabold text-base text-[#2b1136]">
                 حماية الملفات المدفوعة (Signed URLs)
               </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                جميع الكتيبات والأدلة محفوظة في تخزين خاص (Private Bucket) ولا يمكن تنزيلها إلا بعد التحقق من جدول الاستحقاق (entitlements) بحد أقصى 5 تنزيلات لكل عميل.
+                الأدلة الرقمية الثلاثة الخاصة بـ د. إسراء عثمان محفوظة في تخزين مشفر ولا يمكن تنزيلها إلا بعد التحقق من الاستحقاق.
               </p>
               <div className="pt-2 border-t border-gray-100 text-xs font-bold text-[#6b1d7a]">
                 3 منتجات رقمية نشطة • 0 روابط عامة مكشوفة
@@ -583,13 +580,13 @@ export default function AdminDashboardPage() {
 
             <div className="bg-white p-6 rounded-3xl border border-pink-100 shadow-sm space-y-3">
               <span className="px-3 py-1 rounded-full bg-purple-100 text-[#6b1d7a] text-xs font-bold">
-                البرامج والورش (البند 5.4)
+                البرامج والورش
               </span>
               <h3 className="font-extrabold text-base text-[#2b1136]">
-                إدارة الوحدات والمقاعد المحدودة
+                السيكولوجي، الطاقة، ولغة الجسد
               </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                تحكم كامل في نشر الدروس تدريجياً (Drip Content)، وإدارة سعة المقاعد للورش التفاعلية المباشرة مع التحقق من الصلاحية على مستوى الخادم.
+                تحكم كامل في نشر الوحدات التدريبية تدريجياً وإدارة سعة المقاعد للورش التفاعلية المباشرة.
               </p>
               <div className="pt-2 border-t border-gray-100 text-xs font-bold text-[#6b1d7a]">
                 برنامجان نشطان • 6 وحدات تدريبية
@@ -598,13 +595,13 @@ export default function AdminDashboardPage() {
 
             <div className="bg-white p-6 rounded-3xl border border-pink-100 shadow-sm space-y-3">
               <span className="px-3 py-1 rounded-full bg-pink-100 text-[#db1a69] text-xs font-bold">
-                العضويات (البند 5.5)
+                العضويات
               </span>
               <h3 className="font-extrabold text-base text-[#2b1136]">
-                إدارة الاشتراكات والاستحقاق
+                مجتمع د. إسراء عثمان
               </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                متابعة حالات العضوية (نشطة، بانتظار الدفع، متأخرة، ملغاة، منتهية) مع إيقاف الوصول للمحتوى الحصري تلقائياً فور انتهاء تاريخ الصلاحية.
+                متابعة حالات العضوية الشهرية والسنوية مع إيقاف الوصول للمحتوى الحصري تلقائياً فور انتهاء الصلاحية.
               </p>
               <div className="pt-2 border-t border-gray-100 text-xs font-bold text-[#6b1d7a]">
                 خطتان (شهرية / سنوية) • 64 مشتركاً نشطاً
@@ -613,31 +610,53 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* محتوى التبويب 4: سجل التدقيق الإداري Audit Logs (البند 5.7) */}
         {activeTab === "audit" && (
-          <div className="bg-white rounded-3xl p-6 border border-pink-100 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-extrabold text-[#2b1136]">
-                  سجل التدقيق الأمني للأحداث الحساسة (Audit Logs)
-                </h2>
-                <p className="text-xs text-gray-500">
-                  يوثق تلقائياً كل تعديل في حالات الحجز، اعتماد المدفوعات، الأسعار، والصلاحيات مع اسم المستخدم والتوقيت.
-                </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-pink-100 shadow-sm space-y-4">
+              <h2 className="text-lg font-extrabold text-[#2b1136]">
+                سجل التدقيق الأمني للأحداث الحساسة (Audit Logs)
+              </h2>
+              <div className="divide-y divide-gray-100 text-xs">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="py-3 flex items-center justify-between">
+                    <div>
+                      <span className="font-extrabold text-[#6b1d7a] ml-2">[{log.id}]</span>
+                      <span className="font-bold text-[#2b1136]">{log.actor}: </span>
+                      <span className="text-gray-700">{log.action}</span>
+                    </div>
+                    <span className="text-gray-400 font-medium">{log.timestamp}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="divide-y divide-gray-100 text-xs">
-              {auditLogs.map((log) => (
-                <div key={log.id} className="py-3 flex items-center justify-between">
-                  <div>
-                    <span className="font-extrabold text-[#6b1d7a] ml-2">[{log.id}]</span>
-                    <span className="font-bold text-[#2b1136]">{log.actor}: </span>
-                    <span className="text-gray-700">{log.action}</span>
-                  </div>
-                  <span className="text-gray-400 font-medium">{log.timestamp}</span>
-                </div>
-              ))}
+            <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-pink-100 shadow-sm space-y-3 text-xs">
+              <h3 className="text-base font-extrabold text-[#6b1d7a]">
+                الإعدادات العامة والروابط الرسمية المعتمدة
+              </h3>
+              <div className="space-y-2 text-gray-700">
+                <p>
+                  <strong>الاسم الرسمي للمنصة:</strong> منصة د. إسراء عثمان (Dr. Israa Osman)
+                </p>
+                <p>
+                  <strong>النطاق الرسمي (Domain):</strong> israaosman.com
+                </p>
+                <p>
+                  <strong>إنستجرام الحجوزات:</strong> instagram.com/dr_israa_osman
+                </p>
+                <p>
+                  <strong>قناة يوتيوب:</strong> youtube.com/@israaosman
+                </p>
+                <p>
+                  <strong>صفحة فيسبوك:</strong> facebook.com/ConsultantIsraaOsman
+                </p>
+                <p>
+                  <strong>حساب تيك توك:</strong> tiktok.com/@israaosman87
+                </p>
+                <p>
+                  <strong>حساب سناب شات:</strong> snapchat.com/add/drisraa_osman
+                </p>
+              </div>
             </div>
           </div>
         )}
