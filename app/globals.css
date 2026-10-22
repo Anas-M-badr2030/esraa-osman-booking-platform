@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --brand-pink: #db1a69;
@@ -18,8 +16,14 @@ html {
 body {
   background-color: var(--brand-light);
   color: var(--brand-text);
-  font-feature-settings: "kern" 1;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
 }
 
 .bg-brand-gradient {
