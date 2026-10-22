@@ -638,8 +638,21 @@ export default function EsraaPlatformHome() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 pt-6 text-center text-xs text-gray-400">
-            © {new Date().getFullYear()} منصة د. إسراء عثمان الرقمية (Dr. Israa Osman). جميع الحقوق محفوظة.
+         <div className="border-t border-white/10 pt-6 text-center text-xs text-gray-400 space-y-2">
+            <p>
+              © {new Date().getFullYear()} منصة د. إسراء عثمان الرقمية (Dr. Israa Osman). جميع الحقوق محفوظة.
+            </p>
+            <p dir="ltr" className="text-[11px] text-gray-400 tracking-wide">
+              design by{" "}
+              <a
+                href="https://web.aipudio.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-pink-400 hover:text-white transition underline underline-offset-4"
+              >
+                Aipudio-web
+              </a>
+            </p>
           </div>
         </div>
       </footer>
