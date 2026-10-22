@@ -1,17 +1,33 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #fbf7f1;
-  --foreground: #2d241e;
-  --accent: #8d673e;
+  --brand-pink: #db1a69;
+  --brand-purple: #6b1d7a;
+  --brand-light: #fdf4f8;
+  --brand-surface: #ffffff;
+  --brand-text: #1f1224;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html {
+  direction: rtl;
+  scroll-behavior: smooth;
 }
-button, input, select, textarea { font: inherit; }
+
+body {
+  background-color: var(--brand-light);
+  color: var(--brand-text);
+  font-feature-settings: "kern" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #db1a69 0%, #6b1d7a 100%);
+}
+
+.text-brand-gradient {
+  background: linear-gradient(135deg, #db1a69 0%, #6b1d7a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
